@@ -6,6 +6,21 @@ import (
 	"sync"
 )
 
+type TCPPeer struct {
+	conn net.Conn
+
+	// income connection => true
+	// outcome connection => false
+	incoming bool
+}
+
+func NewTCPPeer(conn net.Conn, incoming bool) *TCPPeer {
+	return &TCPPeer{
+		conn:     conn,
+		incoming: incoming,
+	}
+}
+
 type TCPTransport struct {
 	listenAddress string
 	listener      net.Listener
@@ -48,5 +63,7 @@ func (t *TCPTransport) startAcceptLoop() {
 }
 
 func (t *TCPTransport) handleConnection(conn net.Conn) {
-	fmt.Printf("New Connection : %+v\n", conn)
+
+	peer := NewTCPPeer(conn, true)
+	fmt.Printf("New Connection : %+v\n", peer)
 }
